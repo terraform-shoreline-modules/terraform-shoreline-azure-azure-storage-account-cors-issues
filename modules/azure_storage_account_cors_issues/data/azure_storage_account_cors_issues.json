@@ -1,0 +1,94 @@
+{
+  "name": "azure_storage_account_cors_issues",
+  "description": "This incident type typically refers to an issue with Cross-Origin Resource Sharing (CORS) configuration in an Azure Storage account. CORS issues can cause errors or prevent certain types of requests from being processed by the server. This can lead to disruptions in service or data access for users or applications relying on the Azure Storage account.",
+  "params": [
+    {
+      "name": "STORAGE_ACCOUNT_KEY",
+      "value": ""
+    },
+    {
+      "name": "RESOURCE_GROUP_NAME",
+      "value": ""
+    },
+    {
+      "name": "ALLOWED_ORIGINS",
+      "value": ""
+    },
+    {
+      "name": "STORAGE_ACCOUNT_NAME",
+      "value": ""
+    },
+    {
+      "name": "METHODS",
+      "value": ""
+    },
+    {
+      "name": "HOST_NAME",
+      "value": ""
+    },
+    {
+      "name": "K8S_CLUSTER_NAME",
+      "value": ""
+    },
+    {
+      "name": "NAMESPACE",
+      "value": ""
+    }
+  ],
+  "cells": [
+    {
+      "name": "cell_1",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Azure Storage Account CORS Issues\nThis incident type typically refers to an issue with Cross-Origin Resource Sharing (CORS) configuration in an Azure Storage account. CORS issues can cause errors or prevent certain types of requests from being processed by the server. This can lead to disruptions in service or data access for users or applications relying on the Azure Storage account."
+    },
+    {
+      "name": "cell_2",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## List the storage accounts in the subscription"
+    },
+    {
+      "name": "cell_3",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `az storage account list --resource-group ${RESOURCE_GROUP_NAME}`"
+    },
+    {
+      "name": "cell_4",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Show the details of a specific storage account"
+    },
+    {
+      "name": "cell_5",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `az storage account show --name ${STORAGE_ACCOUNT_NAME} --resource-group ${RESOURCE_GROUP_NAME}`"
+    },
+    {
+      "name": "cell_6",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the CORS rules for a storage account"
+    },
+    {
+      "name": "cell_7",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `az storage cors list --account-name ${STORAGE_ACCOUNT_NAME} --account-key ${STORAGE_ACCOUNT_KEY}`"
+    },
+    {
+      "name": "cell_8",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check and update the Azure storage account configuration settings to ensure that CORS is correctly configured."
+    },
+    {
+      "name": "cell_9",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "host | host_name=$HOST_NAME | invoke_cors_setup($STORAGE_ACCOUNT_KEY, $ALLOWED_ORIGINS, $STORAGE_ACCOUNT_NAME, $METHODS)"
+    }
+  ]
+}
